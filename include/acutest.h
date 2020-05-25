@@ -1095,44 +1095,45 @@ test_run_(const struct test_* test, int index, int master_index)
         /* Make sure the child starts with empty I/O buffers. */
         fflush(stdout);
         fflush(stderr);
+		test_do_run_(test, index);
 
-        pid = fork();
-        if(pid == (pid_t)-1) {
-            test_error_("Cannot fork. %s [%d]", strerror(errno), errno);
-            failed = 1;
-        } else if(pid == 0) {
-            /* Child: Do the test. */
-            test_worker_ = 1;
-            failed = (test_do_run_(test, index) != 0);
-            exit(failed ? 1 : 0);
-        } else {
-            /* Parent: Wait until child terminates and analyze its exit code. */
-            waitpid(pid, &exit_code, 0);
-            if(WIFEXITED(exit_code)) {
-                switch(WEXITSTATUS(exit_code)) {
-                    case 0:   failed = 0; break;   /* test has passed. */
-                    case 1:   /* noop */ break;    /* "normal" failure. */
-                    default:  test_error_("Unexpected exit code [%d]", WEXITSTATUS(exit_code));
-                }
-            } else if(WIFSIGNALED(exit_code)) {
-                char tmp[32];
-                const char* signame;
-                switch(WTERMSIG(exit_code)) {
-                    case SIGINT:  signame = "SIGINT"; break;
-                    case SIGHUP:  signame = "SIGHUP"; break;
-                    case SIGQUIT: signame = "SIGQUIT"; break;
-                    case SIGABRT: signame = "SIGABRT"; break;
-                    case SIGKILL: signame = "SIGKILL"; break;
-                    case SIGSEGV: signame = "SIGSEGV"; break;
-                    case SIGILL:  signame = "SIGILL"; break;
-                    case SIGTERM: signame = "SIGTERM"; break;
-                    default:      sprintf(tmp, "signal %d", WTERMSIG(exit_code)); signame = tmp; break;
-                }
-                test_error_("Test interrupted by %s.", signame);
-            } else {
-                test_error_("Test ended in an unexpected way [%d].", exit_code);
-            }
-        }
+        //pid = fork();
+        //if(pid == (pid_t)-1) {
+        //    test_error_("Cannot fork. %s [%d]", strerror(errno), errno);
+        //    failed = 1;
+        //} else if(pid == 0) {
+        //    /* Child: Do the test. */
+        //    test_worker_ = 1;
+        //    failed = (test_do_run_(test, index) != 0);
+        //    exit(failed ? 1 : 0);
+        //} else {
+        //    /* Parent: Wait until child terminates and analyze its exit code. */
+        //    waitpid(pid, &exit_code, 0);
+        //    if(WIFEXITED(exit_code)) {
+        //        switch(WEXITSTATUS(exit_code)) {
+        //            case 0:   failed = 0; break;   /* test has passed. */
+        //            case 1:   /* noop */ break;    /* "normal" failure. */
+        //            default:  test_error_("Unexpected exit code [%d]", WEXITSTATUS(exit_code));
+        //        }
+        //    } else if(WIFSIGNALED(exit_code)) {
+        //        char tmp[32];
+        //        const char* signame;
+        //        switch(WTERMSIG(exit_code)) {
+        //            case SIGINT:  signame = "SIGINT"; break;
+        //            case SIGHUP:  signame = "SIGHUP"; break;
+        //            case SIGQUIT: signame = "SIGQUIT"; break;
+        //            case SIGABRT: signame = "SIGABRT"; break;
+        //            case SIGKILL: signame = "SIGKILL"; break;
+        //            case SIGSEGV: signame = "SIGSEGV"; break;
+        //            case SIGILL:  signame = "SIGILL"; break;
+        //            case SIGTERM: signame = "SIGTERM"; break;
+        //            default:      sprintf(tmp, "signal %d", WTERMSIG(exit_code)); signame = tmp; break;
+        //        }
+        //        test_error_("Test interrupted by %s.", signame);
+        //    } else {
+        //        test_error_("Test ended in an unexpected way [%d].", exit_code);
+        //    }
+        //}
 
 #elif defined(ACUTEST_WIN_)
 
