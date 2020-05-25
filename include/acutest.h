@@ -276,6 +276,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
+#ifdef MULTINODE_BUILD
+#include <mpi.h>
+#endif
 
 #if defined(unix) || defined(__unix__) || defined(__unix) || defined(__APPLE__)
     #define ACUTEST_UNIX_       1
@@ -1609,6 +1612,9 @@ test_is_tracer_present_(void)
 int
 main(int argc, char** argv)
 {
+#ifdef MULTINODE_BUILD
+	MPI_Init(&argc, &argv);
+#endif
     int i;
     test_argv0_ = argv[0];
 
@@ -1752,6 +1758,9 @@ main(int argc, char** argv)
     }
 
     free((void*) test_details_);
+#ifdef MULTINODE_BUILD
+	MPI_Finalize();
+#endif
 
     return (test_stat_failed_units_ == 0) ? 0 : 1;
 }
