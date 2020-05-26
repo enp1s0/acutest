@@ -1090,12 +1090,11 @@ test_run_(const struct test_* test, int index, int master_index)
 #if defined(ACUTEST_UNIX_)
 
         pid_t pid;
-        int exit_code;
 
         /* Make sure the child starts with empty I/O buffers. */
         fflush(stdout);
         fflush(stderr);
-		test_do_run_(test, index);
+        failed = (test_do_run_(test, index) != 0);
 
         //pid = fork();
         //if(pid == (pid_t)-1) {
